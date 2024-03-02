@@ -1,13 +1,13 @@
 use std::net::SocketAddr;
-use axum::response::Html;
-use axum::{Router, ServiceExt};
+use axum::response::{Html, IntoResponse};
+use axum::{Router};
 use axum::routing::get;
 
 #[tokio::main]
 async fn main() {
     let routes_hello = Router::new().route(
-        "/hello",
-        get(|| async { Html("Hello <strong>World!</strong>") }),
+        "/",
+        get(handler_hello)
     );
 
     // --- Start Server
@@ -16,5 +16,14 @@ async fn main() {
     axum::Server::bind(&addr)
         .serve(routes_hello.into_make_service())
         .await
-        .unwrap()
+        .unwrap();
+}
+
+// --- Handler Hello
+async fn handler_hello() -> impl IntoResponse {
+    println!("->> {:<12} - handler hello", "HANDLER");
+
+    let body = reqwest::get("https://news.ycombinator.com")
+        .await.unwrap().text().await.unwrap();
+    Html(format!("{body}"))
 }
