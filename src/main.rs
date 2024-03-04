@@ -2,6 +2,7 @@ use std::net::SocketAddr;
 use axum::response::{Html, IntoResponse};
 use axum::{Router};
 use axum::routing::get;
+use serde::Deserialize;
 
 #[tokio::main]
 async fn main() {
@@ -23,7 +24,6 @@ async fn main() {
 async fn handler_hello() -> impl IntoResponse {
     println!("->> {:<12} - handler hello", "HANDLER");
 
-    let body = reqwest::get("https://news.ycombinator.com")
-        .await.unwrap().text().await.unwrap();
-    Html(format!("{body}"))
+    let api: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
+    Html(format!("{:?}", api))
 }
