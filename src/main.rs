@@ -2,13 +2,16 @@ use std::net::SocketAddr;
 use axum::response::{Html, IntoResponse};
 use axum::{Router};
 use axum::routing::get;
-use serde::Deserialize;
+use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
     let routes_hello = Router::new().route(
+        "/hn",
+        get(handler_get_hn)
+    ).nest_service(
         "/",
-        get(handler_hello)
+        ServeDir::new("dist")
     );
 
     // --- Start Server
@@ -21,8 +24,14 @@ async fn main() {
 }
 
 // --- Handler Hello
-async fn handler_hello() -> impl IntoResponse {
-    println!("->> {:<12} - handler hello", "HANDLER");
+// async fn handler_hello() -> impl IntoResponse {
+//     println!("->> {:<12} - handler hello", "HANDLER");
+//
+//     Html()
+// }
+
+async fn handler_get_hn() -> impl IntoResponse {
+    println!("->> {:<12} - handler get hn", "HANDLER");
 
     let api: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
     Html(format!("{:?}", api))
