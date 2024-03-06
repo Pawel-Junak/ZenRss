@@ -23,16 +23,12 @@ async fn main() {
         .unwrap();
 }
 
-// --- Handler Hello
-// async fn handler_hello() -> impl IntoResponse {
-//     println!("->> {:<12} - handler hello", "HANDLER");
-//
-//     Html()
-// }
-
 async fn handler_get_hn() -> impl IntoResponse {
     println!("->> {:<12} - handler get hn", "HANDLER");
-
+    let mut output = String::from("");
     let api: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
-    Html(format!("{:?}", api))
+    api.iter().for_each( |item|
+        output = format!("{} <b>{}</b><br>", output, item)
+    );
+    Html(output)
 }
