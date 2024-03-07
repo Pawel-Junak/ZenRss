@@ -25,10 +25,11 @@ async fn main() {
 
 async fn handler_get_hn() -> impl IntoResponse {
     println!("->> {:<12} - handler get hn", "HANDLER");
-    let mut output = String::from("");
-    let api: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
-    api.iter().for_each( |item|
-        output = format!("{} <b>{}</b><br>", output, item)
-    );
+    let items: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
+
+    // let mut output = String::from("");
+    // api.iter().for_each( |item|
+    //     output = format!("{} <b>{}</b><br>", output, item)
+    // );
     Html(output)
 }
