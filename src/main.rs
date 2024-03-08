@@ -1,8 +1,15 @@
 use std::net::SocketAddr;
-use axum::response::{Html, IntoResponse};
-use axum::{Router};
+use askama::Template;
+use axum::response::IntoResponse;
+use axum::Router;
 use axum::routing::get;
 use tower_http::services::ServeDir;
+
+#[derive(Template)]
+#[template(path="items.html")]
+struct ItemsTemplate<'a> {
+    items: &'a Vec<i32>
+}
 
 #[tokio::main]
 async fn main() {
@@ -11,7 +18,7 @@ async fn main() {
         get(handler_get_hn)
     ).nest_service(
         "/",
-        ServeDir::new("dist")
+        ServeDir::new("templates")
     );
 
     // --- Start Server
@@ -26,10 +33,6 @@ async fn main() {
 async fn handler_get_hn() -> impl IntoResponse {
     println!("->> {:<12} - handler get hn", "HANDLER");
     let items: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
-
-    // let mut output = String::from("");
-    // api.iter().for_each( |item|
-    //     output = format!("{} <b>{}</b><br>", output, item)
-    // );
-    Html(output)
+    let output = ItemsTemplate {items: &items};
+    output.render().unwrap()
 }
