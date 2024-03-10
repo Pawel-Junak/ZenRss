@@ -1,8 +1,10 @@
+use std::env;
 use std::net::SocketAddr;
 use askama::Template;
 use axum::response::IntoResponse;
 use axum::Router;
 use axum::routing::get;
+use libsql::Builder;
 use tower_http::services::ServeDir;
 
 #[derive(Template)]
@@ -20,6 +22,14 @@ async fn main() {
         "/",
         ServeDir::new("templates")
     );
+
+    let url = env::var("LIBSQL_URL").expect("LIBSQL_URL must be set");
+    let token = env::var("LIBSQL_AUTH_TOKEN").unwrap_or_default();
+
+    let db = Builder::new_remote(url, token).build().await?;
+    let conn = db.connect().unwrap();
+
+    let result = conn.execute("SELECT * FROM users", ()).await.unwrap();
 
     // --- Start Server
     let addr = SocketAddr::from(([127,0,0,1], 8080));
