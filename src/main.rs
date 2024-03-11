@@ -26,10 +26,13 @@ async fn main() {
     let url = env::var("LIBSQL_URL").expect("LIBSQL_URL must be set");
     let token = env::var("LIBSQL_AUTH_TOKEN").unwrap_or_default();
 
-    let db = Builder::new_remote(url, token).build().await?;
+    let db = Builder::new_remote(url, token).build().await.unwrap();
     let conn = db.connect().unwrap();
 
-    let result = conn.execute("SELECT * FROM users", ()).await.unwrap();
+    // conn.execute("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", ()).await.unwrap();
+    conn.execute("INSERT INTO users (name) VALUES (\"Iku\");", ()).await.unwrap();
+    conn.execute("INSERT INTO users (name) VALUES (\"Iku2\");", ()).await.unwrap();
+
 
     // --- Start Server
     let addr = SocketAddr::from(([127,0,0,1], 8080));
