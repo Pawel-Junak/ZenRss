@@ -30,8 +30,8 @@ async fn main() {
     let conn = db.connect().unwrap();
 
     // conn.execute("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", ()).await.unwrap();
-    conn.execute("INSERT INTO users (name) VALUES (\"Iku\");", ()).await.unwrap();
-    conn.execute("INSERT INTO users (name) VALUES (\"Iku2\");", ()).await.unwrap();
+    // conn.execute("INSERT INTO users (name) VALUES (\"Iku\");", ()).await.unwrap();
+    // conn.execute("INSERT INTO users (name) VALUES (\"Iku2\");", ()).await.unwrap();
 
 
     // --- Start Server
@@ -46,6 +46,6 @@ async fn main() {
 async fn handler_get_hn() -> impl IntoResponse {
     println!("->> {:<12} - handler get hn", "HANDLER");
     let items: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
-    let output = ItemsTemplate {items: &items};
+    let output = ItemsTemplate {items: &items[0..30].to_vec()};
     output.render().unwrap()
 }
