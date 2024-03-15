@@ -23,11 +23,7 @@ async fn main() {
         ServeDir::new("templates")
     );
 
-    let url = env::var("LIBSQL_URL").expect("LIBSQL_URL must be set");
-    let token = env::var("LIBSQL_AUTH_TOKEN").unwrap_or_default();
-
-    let db = Builder::new_remote(url, token).build().await.unwrap();
-    let conn = db.connect().unwrap();
+    db_connect().await;
 
     // conn.execute("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", ()).await.unwrap();
     // conn.execute("INSERT INTO users (name) VALUES (\"Iku\");", ()).await.unwrap();
@@ -41,6 +37,14 @@ async fn main() {
         .serve(routes_hello.into_make_service())
         .await
         .unwrap();
+}
+
+async fn db_connect() {
+    let url = env::var("LIBSQL_URL").expect("LIBSQL_URL must be set");
+    let token = env::var("LIBSQL_AUTH_TOKEN").unwrap_or_default();
+
+    let db = Builder::new_remote(url, token).build().await.unwrap();
+    let conn = db.connect().unwrap();
 }
 
 async fn handler_get_hn() -> impl IntoResponse {
