@@ -8,30 +8,29 @@ use libsql::Builder;
 use tower_http::services::ServeDir;
 
 #[derive(Template)]
-#[template(path="items.html")]
+#[template(path = "items.html")]
 struct ItemsTemplate<'a> {
-    items: &'a Vec<i32>
+    items: &'a Vec<i32>,
 }
 
 #[tokio::main]
 async fn main() {
     let routes_hello = Router::new().route(
         "/hn",
-        get(handler_get_hn)
+        get(handler_get_hn),
     ).nest_service(
         "/",
-        ServeDir::new("templates")
+        ServeDir::new("templates"),
     );
 
     db_connect().await;
 
-    // conn.execute("CREATE TABLE users (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", ()).await.unwrap();
     // conn.execute("INSERT INTO users (name) VALUES (\"Iku\");", ()).await.unwrap();
     // conn.execute("INSERT INTO users (name) VALUES (\"Iku2\");", ()).await.unwrap();
 
 
     // --- Start Server
-    let addr = SocketAddr::from(([127,0,0,1], 8080));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("->> LISTENING on {addr}\n");
     axum::Server::bind(&addr)
         .serve(routes_hello.into_make_service())
@@ -40,16 +39,18 @@ async fn main() {
 }
 
 async fn db_connect() {
+
     let url = env::var("LIBSQL_URL").expect("LIBSQL_URL must be set");
     let token = env::var("LIBSQL_AUTH_TOKEN").unwrap_or_default();
 
     let db = Builder::new_remote(url, token).build().await.unwrap();
     let conn = db.connect().unwrap();
+    conn.execute("CREATE TABLE IF NOT EXISTS users (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT);", ()).await.unwrap();
 }
 
 async fn handler_get_hn() -> impl IntoResponse {
     println!("->> {:<12} - handler get hn", "HANDLER");
     let items: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
-    let output = ItemsTemplate {items: &items[0..30].to_vec()};
+    let output = ItemsTemplate { items: &items[0..30].to_vec() };
     output.render().unwrap()
 }
