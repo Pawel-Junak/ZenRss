@@ -5,6 +5,7 @@ use axum::response::IntoResponse;
 use axum::Router;
 use axum::routing::get;
 use libsql::Builder;
+use rss::Channel;
 use tower_http::services::ServeDir;
 
 #[derive(Template)]
@@ -51,6 +52,12 @@ async fn db_connect() {
 async fn handler_get_hn() -> impl IntoResponse {
     println!("->> {:<12} - handler get hn", "HANDLER");
     let items: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
+    let rss = reqwest::get("https://hnrss.org/frontpage").await.unwrap().bytes().await.unwrap();
+    let channel = Channel::read_from(&rss[..]);
+    match channel.unwrap().items.to_vec().first() {
+        Some(x) => x,
+        None => todo!(),
+    }
     let output = ItemsTemplate { items: &items[0..30].to_vec() };
     output.render().unwrap()
 }
