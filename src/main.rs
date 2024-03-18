@@ -55,7 +55,7 @@ async fn handler_get_hn() -> impl IntoResponse {
     let rss = reqwest::get("https://hnrss.org/frontpage").await.unwrap().bytes().await.unwrap();
     let channel = Channel::read_from(&rss[..]);
     match channel.unwrap().items.to_vec().first() {
-        Some(x) => x,
+        Some(x) => println!("{}", x.clone().title.unwrap()),
         None => todo!(),
     }
     let output = ItemsTemplate { items: &items[0..30].to_vec() };
