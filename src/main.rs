@@ -11,7 +11,7 @@ use tower_http::services::ServeDir;
 #[derive(Template)]
 #[template(path = "items.html")]
 struct ItemsTemplate<'a> {
-    items: &'a Vec<String>,
+    items: &'a Vec<(String, String)>,
 }
 
 #[tokio::main]
@@ -54,7 +54,11 @@ async fn handler_get_hn() -> impl IntoResponse {
     let items: Vec<i32> = reqwest::get("https://hacker-news.firebaseio.com/v0/topstories.json").await.unwrap().json().await.unwrap();
     let rss = reqwest::get("https://hnrss.org/frontpage").await.unwrap().bytes().await.unwrap();
     let channel = Channel::read_from(&rss[..]);
-    let first_30: Vec<String> = channel.unwrap().items[0..10].iter().map(|item| item.clone().title.unwrap()).collect();
+    let first_30: Vec<(String, String)> = channel.unwrap()
+        .items[0..10]
+        .iter()
+        .map(|item| (item.clone().title.unwrap(), item.clone().description.unwrap()))
+        .collect();
 
     // match channel.unwrap().items.to_vec().first() {
     //     Some(x) => println!("{}", x.clone().title.unwrap()),

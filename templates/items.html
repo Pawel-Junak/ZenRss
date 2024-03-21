@@ -1,5 +1,6 @@
 <ul class="grid grid-cols-1 divide-y">
     {% for item in items %}
-    <li class="p-8">{{ item }}</li>
+    <li class="p-8">{{ item.0 }}</li>
+    <li class="p-8">{{ item.1 }}</li>
     {% endfor %}
 </ul>
