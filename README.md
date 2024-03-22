@@ -14,3 +14,13 @@
 - make it accessible on constrained resources (network/device)
 - show only 30-60 last news from channel to take care of news overload
 - simple synchronization
+
+
+## TODO
+
+- [ ] Log in
+- [ ] Setup DB
+- [ ] Save sources
+- [ ] Mark read items
+- [ ] Parse stream
+- [ ] Overall design
