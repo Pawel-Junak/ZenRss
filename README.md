@@ -27,3 +27,4 @@
 - [ ] Check cloudflare and wasm possibilities
 - [ ] Turso checkout
 - [ ] web3
+- [ ] test edit in github
