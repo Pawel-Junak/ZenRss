@@ -28,3 +28,4 @@
 - [ ] Turso checkout
 - [ ] web3
 - [ ] test edit in github
+- [ ] koszyczek
