@@ -29,3 +29,4 @@
 - [ ] web3
 - [ ] test edit in github
 - [ ] koszyczek
+- [ ] jajeczko
