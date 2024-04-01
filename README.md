@@ -30,3 +30,4 @@
 - [ ] test edit in github
 - [ ] koszyczek
 - [ ] jajeczko
+- [ ] smingus dyngus
