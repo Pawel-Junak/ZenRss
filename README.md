@@ -26,8 +26,3 @@
 - [ ] Overall design
 - [ ] Check cloudflare and wasm possibilities
 - [ ] Turso checkout
-- [ ] web3
-- [ ] test edit in github
-- [ ] koszyczek
-- [ ] jajeczko
-- [ ] smingus dyngus
