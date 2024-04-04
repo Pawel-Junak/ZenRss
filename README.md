@@ -26,3 +26,4 @@
 - [ ] Overall design
 - [ ] Check cloudflare and wasm possibilities
 - [ ] Turso checkout
+- [ ] daisyUI
