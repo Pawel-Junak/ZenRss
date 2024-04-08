@@ -28,3 +28,4 @@
 - [ ] Turso checkout
 - [ ] daisyUI
 - [ ] webapp manifesto
+- [ ] get to work
